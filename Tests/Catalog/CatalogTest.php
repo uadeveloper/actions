@@ -18,6 +18,6 @@ class CatalogTest extends TestCase
 
     public function testFail(): void
     {
-#        $this->assertTrue(false);
+        $this->assertTrue(true);
     }
 }

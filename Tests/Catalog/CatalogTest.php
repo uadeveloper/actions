@@ -16,4 +16,8 @@ class CatalogTest extends TestCase
         $this->assertEquals(0, 0);
     }
 
+    public function testFail(): void
+    {
+        $this->assertTrue(false);
+    }
 }

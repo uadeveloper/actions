@@ -38,6 +38,8 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=date::$(date +'%Y-%m-%d-%H-%M')"
+      - name: Sleep 200sec
+        run: sleep 200
       - name: Create release tag
         run: git tag live_release_${{ steps.date.outputs.date }}
       - name: Push git tag

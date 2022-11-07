@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/7.5/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         bootstrap="./test_bootstrap.php"
+         failOnRisky="true"
+         failOnWarning="true"
+         stopOnFailure="false"
+         timeoutForLargeTests="900"
+>
+    <testsuites>
+        <testsuite name="Main">
+            <directory>Tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

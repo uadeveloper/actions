@@ -23,5 +23,7 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --prefer-dist --ignore-platform-reqs
       - name: List current folder
         run: ls -la
-      - name: RUN Unit tests
+      - name: Run Unit tests
         run: ./vendor/bin/phpunit
+      - name: Create release tag
+        run: git tag 'live_release_v1'

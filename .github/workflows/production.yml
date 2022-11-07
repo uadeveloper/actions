@@ -25,7 +25,13 @@ jobs:
         run: ls -la
       - name: Run Unit tests
         run: ./vendor/bin/phpunit
+  Deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+    steps:
       - name: Create release tag
-        run: git tag 'live_release_v1'
+        run: git tag "live_release_${GITHUB_SHA}"
       - name: Push git tag
-        run: git push origin live_release_v1
+        run: git push origin "live_release_${GITHUB_SHA}"
+

@@ -27,3 +27,5 @@ jobs:
         run: ./vendor/bin/phpunit
       - name: Create release tag
         run: git tag 'live_release_v1'
+      - name: Push git tag
+        run: git push origin live_release_v1

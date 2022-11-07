@@ -1,0 +1,75 @@
+name: Production Deploy
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+on:
+  workflow_dispatch:
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      -
+  Create release tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - run: git tag ${{ github.event.inputs.tag }}
+  Deploy:
+    runs-on: self-hosted
+    environment:
+      name: staging
+    steps:
+      - name: Prepare and log deploy
+        id: deployArgs
+        run: |
+          deployArgs=''
+          echo "::group::Deploy params"
+          if ${{ github.event.inputs.restart-celery-bulk-update }}; then
+              deployArgs+=' --supervisor-restart=celery-bulk-update '
+              echo "Restart celery bulk update"
+          fi
+          if ${{ github.event.inputs.restart-celery-export }}; then
+              deployArgs+=' --supervisor-restart=celery-export '
+              echo "Restart celery export"
+          fi
+          if ${{ github.event.inputs.restart-celery-feed }}; then
+              deployArgs+=' --supervisor-restart=celery-feed '
+              echo "Restart celery feed"
+          fi
+          if ${{ github.event.inputs.restart-celery-main }}; then
+              deployArgs+=' --supervisor-restart=celery-main '
+              echo "Restart celery main"
+          fi
+          if ${{ github.event.inputs.restart-celery-product-history }}; then
+              deployArgs+=' --supervisor-restart=celery-product-history '
+              echo "Restart celery product history"
+          fi
+          if ${{ github.event.inputs.restart-celery-translate }}; then
+              deployArgs+=' --supervisor-restart=celery-translate '
+              echo "Restart celery translate"
+          fi
+          if ${{ github.event.inputs.restart-celery-vogacloset-sync }}; then
+              deployArgs+=' --supervisor-restart=celery-vogacloset-sync '
+              echo "Restart celery vogacloset sync"
+          fi
+          if ${{ github.event.inputs.restart-flower }}; then
+              deployArgs+=' --supervisor-restart=flower '
+              echo "Restart Flower"
+          fi
+          if ${{ github.event.inputs.restart-product-sync }}; then
+              deployArgs+=' --supervisor-restart=product-sync '
+              echo "Restart product sync"
+          fi
+          echo "::endgroup::"
+          echo "deployArgs=$deployArgs" >> $GITHUB_OUTPUT
+      - name: Start deploy
+        run: /mnt/efs/deploy/deploy/aws_deploy.sh ${{ steps.deployArgs.outputs.deployArgs }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_VPC_NAME: ${{ secrets.AWS_VPC_NAME }}
+          AWS_SCRIPTS_GROUP_NAME: ${{ secrets.AWS_SCRIPTS_GROUP_NAME }}
+          AWS_FRONTEND_GROUP_NAME: ${{ secrets.AWS_FRONTEND_GROUP_NAME }}
